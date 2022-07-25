@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+var host = "http://localhost:3000/"
+
 struct City: Codable {
     var id: Int
     var latitude, longitude: Double
@@ -18,10 +20,14 @@ struct Cities: Codable {
 }
 
 struct ContentView: View {
-    @State private var cities = [City]()
     
-//    @State private var joke: String = ""
+    @MainActor var weatherManager = WeatherManager()
+    
+    @State private var stockholmWeather: String = ""
+    @State private var gothenburgWeather: String = ""
+    @State private var malmoWeather: String = ""
 //
+    
     var body: some View {
         ScrollView{
             VStack(alignment: .center, spacing: 10.0) {
@@ -98,25 +104,36 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .font(.title3)
                         .multilineTextAlignment(.leading)
-                    Text(" ")
+                    Text(stockholmWeather)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .multilineTextAlignment(.leading)
                     Text("Göteborg ")
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .font(.title3)
                         .multilineTextAlignment(.leading)
-                    Text(" ")
+                    Text(gothenburgWeather)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .multilineTextAlignment(.leading)
                     Text("Malmö ")
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .font(.title3)
                         .multilineTextAlignment(.leading)
-                    Text(" ")
+                    Text(malmoWeather)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .multilineTextAlignment(.leading)
                 }
                 .padding(.horizontal)
+                .task{
+                    Task{
+                        let weathers = await weatherManager.fetchWeather()
+//                                await fetchWeather()
+                        stockholmWeather = weatherManager.findWeather(weathers: weathers, targetCity: "Stockholm")
+                        gothenburgWeather = weatherManager.findWeather(weathers: weathers, targetCity: "Göteborg")
+                        malmoWeather = weatherManager.findWeather(weathers: weathers, targetCity: "Malmö")
+//                        print(weathers)
+                    }
+                }
+                
 
                 Image("sweden-map")
 
@@ -131,75 +148,7 @@ struct ContentView: View {
 }
         
         
-//        Text(joke)
-//                Button {
-//                    Task {
-//                        let (data, _) = try await URLSession.shared.data(from: URL(string:"https://api.chucknorris.io/jokes/random")!)
-//                        let decodedResponse = try? JSONDecoder().decode(Joke.self, from: data)
-//                        joke = decodedResponse?.value ?? ""
-//                    }
-//                } label: {
-//                    Text("Fetch Joke")
-//                }
-//    }
-//}
-        
 
-//        List(cities, id: \.cityId) { item in
-//            VStack(alignment: .leading) {
-//                let latitude = "\(item.latitude)"
-//                let longitude = "\(item.longitude)"
-//                Text(item.cityName)
-//                    .font(.headline)
-//                Text("lat: " + latitude + " long: " + longitude)
-//            }
-//        }
-//        .task {
-//            await loadWeather()
-//        }
-        
-//    } // body
-    
-//    func loadWeather() async {
-//        guard let url = URL(string: "https://klader-efter-vader.herokuapp.com/cities") else {
-//            print("Felaktigt anrop")
-//            return
-//        }
-//
-//        let request = URLRequest(url: url)
-//
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            if let data = data {
-//                print(data)
-//                if let decodedResponse = try? JSONDecoder().decode(Cities.self, from: data) {
-//                    // we have good data – go back to the main thread
-//                    DispatchQueue.main.async {
-//                        // update our UI
-//                        self.cities = decodedResponse.cities
-//                    }
-//
-//                    // everything is good, so we can exit
-//                    return
-//                }
-//            }
-//
-//            // if we're still here it means there was a problem
-//            print("Fetch failed: \(error?.localizedDescription ?? "Unknown error")")
-//        }.resume()
-//
-//        //        do {
-//        //            let (data, _) = try await URLSession.shared.dataTask(with: url)
-//        //
-//        //            if let decodedCities = try? JSONDecoder().decode(Cities.self, from: data) {
-//        //                cities = decodedCities.cities
-//        //                print(cities)
-//        //            }
-//        //        } catch {
-//        //            print("Felaktig data")
-//        //        }
-//    }
-//}
-//
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -208,7 +157,3 @@ struct ContentView_Previews: PreviewProvider {
         }
     }
 }
-//
-//struct Joke: Codable {
-//    let value: String
-//}
