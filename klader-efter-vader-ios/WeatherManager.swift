@@ -40,10 +40,39 @@ struct Weather: Codable {
         "Tärnaby",
         "Kiruna"
     ]
+    
+    var icons = [
+        "sun.min.fill",
+        "cloud.sun.fill",
+        "cloud.sun.fill",
+        "cloud.sun.fill",
+        "cloud.sun.fill",
+        "cloud.fill",
+        "cloud.fog.fill",
+        "cloud.drizzle.fill",
+        "cloud.rain.fill",
+        "cloud.heavyrain.fill",
+        "cloud.bolt.fill",
+        "cloud.drizzle.fill",
+        "cloud.rain.fill",
+        "cloud.heavyrain.fill",
+        "cloud.snow.fill",
+        "cloud.snow.fill",
+        "cloud.snow.fill",
+        "cloud.drizzle.fill",
+        "cloud.rain.fill",
+        "cloud.heavyrain.fill",
+        "cloud.bolt.fill",
+        "cloud.snow.fill",
+        "cloud.snow.fill",
+        "cloud.snow.fill",
+        "cloud.snow.fill",
+        "cloud.snow.fill",
+        "cloud.snow.fill",
+    ]
 
     func fetchWeather() async -> [Weather]{
-        print("hej")
-        guard let wantedCity = try? JSONEncoder().encode(wantedCities) else {
+        guard let wantedCitiesEncoded = try? JSONEncoder().encode(wantedCities) else {
             print("Failed to encode order")
             return []
         }
@@ -58,10 +87,7 @@ struct Weather: Codable {
         request.httpMethod = "POST"
         
         do {
-            print("hello")
-            let (data, _) = try await URLSession.shared.upload(for: request, from: wantedCity)
-//            let (data, _) = try await URLSession.shared.data(from: url)
-            print("hello")
+            let (data, _) = try await URLSession.shared.upload(for: request, from: wantedCitiesEncoded)
             let decodedWeather = try JSONDecoder().decode([Weather].self, from: data)
             
             return decodedWeather
@@ -78,6 +104,10 @@ struct Weather: Codable {
             }
         }
         return ""
+    }
+    
+    func getIcon(value: Int) -> String {
+        return icons[value-1]
     }
     
 }
