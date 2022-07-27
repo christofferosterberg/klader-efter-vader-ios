@@ -25,7 +25,13 @@ struct Cities: Codable {
 
 struct ContentView: View {
     
+    @State private var city: String = ""
+    @State private var clothes: String = ""
+    @State private var clothesButtonIsHidden: Bool = false
+    @State private var clothesStackIsHidden: Bool = true
+    
     @MainActor var weatherManager = WeatherManager()
+    @MainActor var clothesManager = ClothesManager()
     
     @State private var hour: String = ""
     @State private var stockholmWeather: String = ""
@@ -78,21 +84,59 @@ struct ContentView: View {
                     Text("Vilken stad bor du i?")
                         .font(.title3)
                         .multilineTextAlignment(.leading)
-                    TextField("Välj stad", text: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Value@*/.constant("")/*@END_MENU_TOKEN@*/)
+                    TextField("Välj stad", text: $city)
                         .padding()
                         .border(.gray)
                 }
                 .padding(.horizontal)
                 
                 VStack(alignment: .center){
-                    Button() {
-                    } label: {
-                        Text("Se vilka kläder du ska ta på dig idag!")
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
-                            .cornerRadius(40)
+                    if !clothesButtonIsHidden {
+                        Button("Se vilka kläder du ska ta på dig idag!",
+                               action: {
+                            Task{
+                                clothesButtonIsHidden = true
+                                clothesStackIsHidden = false
+                                clothes = await clothesManager.fetchClothes(city: city)
+                            }})
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
+                        .cornerRadius(40)
+                    }
+                    
+                    if !clothesStackIsHidden {
+                        HStack(alignment: .center) {
+                            Text(clothes)
+                                .multilineTextAlignment(.leading)
+                                .padding(/*@START_MENU_TOKEN@*/.all, 10.0/*@END_MENU_TOKEN@*/)
+                                .frame(maxWidth: .infinity)
+                                .frame(maxWidth: .infinity)
+//                                .frame(height: 70.0)
+                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                                .cornerRadius(10)
+                            VStack(alignment: .center) {
+                                Button("Uppdatera", action: {
+                                    Task {
+                                        clothes = await clothesManager.fetchClothes(city: city)
+                                    }})
+                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
+                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                                .cornerRadius(5)
+                                Button("Återgå", action: {
+                                    Task{
+                                        clothesButtonIsHidden = false
+                                        clothesStackIsHidden = true
+                                    }})
+                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
+                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.gray/*@END_MENU_TOKEN@*/)
+                                .cornerRadius(5)
+                                .foregroundColor(.white)
+                                Spacer()
+                            }
+                        }
+                        .padding(.bottom, 2.0)
                     }
                     
                     Button() {
@@ -250,6 +294,11 @@ struct ContentView: View {
         } // ScrollView
         .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
     }
+    
+    //    func seeClothes(){
+    ////        print(city)
+    //        await clothesManager.fetchClothes(city: "hej")
+    //    }
 }
 
 
