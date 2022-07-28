@@ -27,11 +27,20 @@ struct ContentView: View {
     
     @State private var city: String = ""
     @State private var clothes: String = ""
-    @State private var clothesButtonIsHidden: Bool = false
-    @State private var clothesStackIsHidden: Bool = true
+    @State private var clothesButtonIsShown: Bool = true
+    @State private var clothesStackIsShown: Bool = false
+    @State private var pollen: String = ""
+    @State private var allergyValue: Int = 0
+    @State private var pollenButtonIsShown: Bool = true
+    @State private var pollenQuestionsAreShown: Bool = false
+    @State private var pollenStackIsShown: Bool = false
+    @State private var uvButtonIsShown: Bool = true
+    @State private var uvQuestionsAreShown: Bool = false
+    @State private var uvStackIsShown: Bool = false
     
     @MainActor var weatherManager = WeatherManager()
     @MainActor var clothesManager = ClothesManager()
+    @MainActor var pollenManager = PollenManager()
     
     @State private var hour: String = ""
     @State private var stockholmWeather: String = ""
@@ -91,12 +100,12 @@ struct ContentView: View {
                 .padding(.horizontal)
                 
                 VStack(alignment: .center){
-                    if !clothesButtonIsHidden {
+                    if clothesButtonIsShown {
                         Button("Se vilka kläder du ska ta på dig idag!",
                                action: {
                             Task{
-                                clothesButtonIsHidden = true
-                                clothesStackIsHidden = false
+                                clothesButtonIsShown = false
+                                clothesStackIsShown = true
                                 clothes = await clothesManager.fetchClothes(city: city)
                             }})
                         .frame(maxWidth: .infinity)
@@ -106,14 +115,13 @@ struct ContentView: View {
                         .cornerRadius(40)
                     }
                     
-                    if !clothesStackIsHidden {
+                    if clothesStackIsShown {
                         HStack(alignment: .center) {
                             Text(clothes)
                                 .multilineTextAlignment(.leading)
                                 .padding(/*@START_MENU_TOKEN@*/.all, 10.0/*@END_MENU_TOKEN@*/)
                                 .frame(maxWidth: .infinity)
                                 .frame(maxWidth: .infinity)
-//                                .frame(height: 70.0)
                                 .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
                                 .cornerRadius(10)
                             VStack(alignment: .center) {
@@ -126,8 +134,8 @@ struct ContentView: View {
                                 .cornerRadius(5)
                                 Button("Återgå", action: {
                                     Task{
-                                        clothesButtonIsHidden = false
-                                        clothesStackIsHidden = true
+                                        clothesButtonIsShown = true
+                                        clothesStackIsShown = false
                                     }})
                                 .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
                                 .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.gray/*@END_MENU_TOKEN@*/)
@@ -139,14 +147,101 @@ struct ContentView: View {
                         .padding(.bottom, 2.0)
                     }
                     
-                    Button() {
-                    } label: {
-                        Text("Ta reda på om du behöver ta pollenmedicin idag!")
+                    if pollenButtonIsShown {
+                        Button("Ta reda på om du behöver ta pollenmedicin idag!",
+                               action: {
+                            Task {
+                                pollenButtonIsShown = false
+                                pollenQuestionsAreShown = true
+                            }})
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
+                        .cornerRadius(40)
+                    }
+                    
+                    if pollenQuestionsAreShown {
+                        Text("Hur allergisk skulle du säga att du är emot pollen?")
+                            .font(.title3)
+                            .multilineTextAlignment(.leading)
+                        HStack{
+                            Button("Lite allergisk",
+                                   action: {
+                                Task{
+                                    pollenQuestionsAreShown = false
+                                    pollenStackIsShown = true
+                                    allergyValue = 0
+                                    pollen = await pollenManager.fetchPollen(city: city, allergy: allergyValue)
+                                    
+                                }})
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
                             .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
-                            .cornerRadius(40)
+                            .cornerRadius(10)
+                            
+                            Button("Ganska allergisk",
+                                   action: {
+                                Task{
+                                    pollenQuestionsAreShown = false
+                                    pollenStackIsShown = true
+                                    allergyValue = 1
+                                    pollen = await pollenManager.fetchPollen(city: city, allergy: allergyValue)
+                                    
+                                }})
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
+                            .cornerRadius(10)
+                            Button("Väldigt allergisk",
+                                   action: {
+                                Task{
+                                    pollenQuestionsAreShown = false
+                                    pollenStackIsShown = true
+                                    allergyValue = 2
+                                    pollen = await pollenManager.fetchPollen(city: city, allergy: allergyValue)
+                                }})
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
+                            .cornerRadius(10)
+                        }
+                    }
+                    
+                    if pollenStackIsShown {
+                        HStack(alignment: .center) {
+                            Text(pollen)
+                                .multilineTextAlignment(.leading)
+                                .padding(/*@START_MENU_TOKEN@*/.all, 10.0/*@END_MENU_TOKEN@*/)
+                                .frame(maxWidth: .infinity)
+                                .frame(maxWidth: .infinity)
+                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                                .cornerRadius(10)
+                            VStack(alignment: .center) {
+                                Button("Uppdatera", action: {
+                                    Task {
+                                        pollen = await pollenManager.fetchPollen(city: city, allergy: allergyValue)
+                                    }})
+                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
+                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                                .cornerRadius(5)
+                                Button("Återgå", action: {
+                                    Task{
+                                        pollenButtonIsShown = true
+                                        pollenStackIsShown = false
+                                    }})
+                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
+                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.gray/*@END_MENU_TOKEN@*/)
+                                .cornerRadius(5)
+                                .foregroundColor(.white)
+                                Spacer()
+                            }
+                        }
+                        .padding(.bottom, 2.0)
+                        
                     }
                     
                     Button() {
