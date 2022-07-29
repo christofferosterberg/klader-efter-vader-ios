@@ -19,10 +19,6 @@ struct Cities: Codable {
     var cities: [City]
 }
 
-//struct ImageOverlay: View {
-//    var body: some View {
-//}
-
 struct ContentView: View {
     
     @State private var city: String = ""
@@ -34,6 +30,8 @@ struct ContentView: View {
     @State private var pollenButtonIsShown: Bool = true
     @State private var pollenQuestionsAreShown: Bool = false
     @State private var pollenStackIsShown: Bool = false
+    @State private var uv: String = ""
+    @State private var uvValue: Int = 0
     @State private var uvButtonIsShown: Bool = true
     @State private var uvQuestionsAreShown: Bool = false
     @State private var uvStackIsShown: Bool = false
@@ -41,6 +39,7 @@ struct ContentView: View {
     @MainActor var weatherManager = WeatherManager()
     @MainActor var clothesManager = ClothesManager()
     @MainActor var pollenManager = PollenManager()
+    @MainActor var uvManager = UVManager()
     
     @State private var hour: String = ""
     @State private var stockholmWeather: String = ""
@@ -110,8 +109,8 @@ struct ContentView: View {
                             }})
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
+                        .background(Color(red: 0.788, green: 0.949, blue: 1.0))
+                        .foregroundColor(.black)
                         .cornerRadius(40)
                     }
                     
@@ -244,17 +243,103 @@ struct ContentView: View {
                         
                     }
                     
-                    Button() {
-                    }label:{
-                        Text("Ta reda på hur stark solkyddsfaktor du behöver ta idag!")
+                    if uvButtonIsShown {
+                        Button("Ta reda på hur stark solkyddsfaktor du behöver ta idag!",
+                               action: {
+                            Task {
+                                uvButtonIsShown = false
+                                uvQuestionsAreShown = true
+                            }})
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                        .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
+                        .cornerRadius(40)
+                    }
+                    
+                    if uvQuestionsAreShown {
+                        Text("Hur känslig skulle du säga att du är mot solen?")
+                            .font(.title3)
+                            .multilineTextAlignment(.leading)
+                        HStack{
+                            Button("Lite känslig",
+                                   action: {
+                                Task{
+                                    uvQuestionsAreShown = false
+                                    uvStackIsShown = true
+                                    uvValue = 0
+                                    uv = await uvManager.fetchUV(city: city, uvValue: uvValue)
+                                    
+                                }})
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
                             .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
-                            .cornerRadius(40)
+                            .cornerRadius(10)
+                            
+                            Button("Ganska känslig",
+                                   action: {
+                                Task{
+                                    uvQuestionsAreShown = false
+                                    uvStackIsShown = true
+                                    uvValue = 1
+                                    uv = await uvManager.fetchUV(city: city, uvValue: uvValue)
+                                    
+                                }})
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
+                            .cornerRadius(10)
+                            Button("Väldigt känslig",
+                                   action: {
+                                Task{
+                                    uvQuestionsAreShown = false
+                                    uvStackIsShown = true
+                                    uvValue = 2
+                                    uv = await uvManager.fetchUV(city: city, uvValue: uvValue)
+                                }})
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
+                            .cornerRadius(10)
+                        }
+                    }
+                    
+                    if uvStackIsShown {
+                        HStack(alignment: .center) {
+                            Text(uv)
+                                .multilineTextAlignment(.leading)
+                                .padding(/*@START_MENU_TOKEN@*/.all, 10.0/*@END_MENU_TOKEN@*/)
+                                .frame(maxWidth: .infinity)
+                                .frame(maxWidth: .infinity)
+                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                                .cornerRadius(10)
+                            VStack(alignment: .center) {
+                                Button("Uppdatera", action: {
+                                    Task {
+                                        uv = await uvManager.fetchUV(city: city, uvValue: uvValue)
+                                    }})
+                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
+                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                                .cornerRadius(5)
+                                Button("Återgå", action: {
+                                    Task{
+                                        uvButtonIsShown = true
+                                        uvStackIsShown = false
+                                    }})
+                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
+                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.gray/*@END_MENU_TOKEN@*/)
+                                .cornerRadius(5)
+                                .foregroundColor(.white)
+                                Spacer()
+                            }
+                        }
+                        .padding(.bottom, 2.0)
                     }
                 }
-                .padding(.all)
+                .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                 
                 VStack(alignment: .leading){
                     Text("Vädret just nu (" + hour + ":00)")
@@ -390,10 +475,6 @@ struct ContentView: View {
         .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
     }
     
-    //    func seeClothes(){
-    ////        print(city)
-    //        await clothesManager.fetchClothes(city: "hej")
-    //    }
 }
 
 
