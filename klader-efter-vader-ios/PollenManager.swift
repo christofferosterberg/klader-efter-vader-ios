@@ -11,7 +11,10 @@ import Foundation
     func fetchPollen(city: String, allergy: Int) async -> String {
         
         
-        guard let url = URL(string: host + "pollen-info/" + city + "/" + String(allergy)) else {
+        var components = URLComponents()
+        components.path = "pollen-info/" + city + "/" + String(allergy)
+        
+        guard let url = URL(string: host + components.percentEncodedPath) else {
             print("Invalid URL")
             return ""
         }

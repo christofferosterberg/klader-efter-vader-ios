@@ -9,15 +9,15 @@ import Foundation
 
 @MainActor class ClothesManager: ObservableObject {
     func fetchClothes(city: String) async -> String {
+
         
-        guard let url = URL(string: host + "clothes-info/" + city) else {
+        var components = URLComponents()
+        components.path = "clothes-info/" + city
+        
+        guard let url = URL(string: host + components.percentEncodedPath) else {
             print("Invalid URL")
             return ""
         }
-        
-        var request = URLRequest(url: url)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "GET"
         
         do {
             let (data, _) = try await URLSession.shared.data(from: url)

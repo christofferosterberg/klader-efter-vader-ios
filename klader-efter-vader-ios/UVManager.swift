@@ -10,8 +10,10 @@ import Foundation
 @MainActor class UVManager: ObservableObject {
     func fetchUV(city: String, uvValue: Int) async -> String {
         
+        var components = URLComponents()
+        components.path = "uv-info/" + city + "/" + String(uvValue)
         
-        guard let url = URL(string: host + "uv-info/" + city + "/" + String(uvValue)) else {
+        guard let url = URL(string: host + components.percentEncodedPath) else {
             print("Invalid URL")
             return ""
         }
