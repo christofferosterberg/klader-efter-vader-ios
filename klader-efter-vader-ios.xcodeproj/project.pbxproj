@@ -8,21 +8,29 @@
 
 /* Begin PBXBuildFile section */
 		0592DAE2288EB4F300BAE387 /* WeatherManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0592DAE1288EB4F300BAE387 /* WeatherManager.swift */; };
+		0595A29D28993C83004531C5 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0595A29C28993C83004531C5 /* LocationManager.swift */; };
+		0595A29F28994330004531C5 /* CitiesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0595A29E28994330004531C5 /* CitiesManager.swift */; };
+		05BCC2BB2891293000B5BD70 /* ClothesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05BCC2BA2891293000B5BD70 /* ClothesManager.swift */; };
+		05D0C56E2892D38D0060A072 /* PollenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D0C56D2892D38D0060A072 /* PollenManager.swift */; };
+		05D0C5702892D9BB0060A072 /* UVManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D0C56F2892D9BB0060A072 /* UVManager.swift */; };
 		05D372A9287DAB0A00EF6EB8 /* klader_efter_vader_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D372A8287DAB0A00EF6EB8 /* klader_efter_vader_iosApp.swift */; };
 		05D372AB287DAB0A00EF6EB8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D372AA287DAB0A00EF6EB8 /* ContentView.swift */; };
 		05D372AD287DAB0C00EF6EB8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 05D372AC287DAB0C00EF6EB8 /* Assets.xcassets */; };
 		05D372B0287DAB0C00EF6EB8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 05D372AF287DAB0C00EF6EB8 /* Preview Assets.xcassets */; };
-		05DC975D288AAD20008DF5E5 /* CitiesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DC975C288AAD20008DF5E5 /* CitiesManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0592DAE1288EB4F300BAE387 /* WeatherManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherManager.swift; sourceTree = "<group>"; };
+		0595A29C28993C83004531C5 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		0595A29E28994330004531C5 /* CitiesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesManager.swift; sourceTree = "<group>"; };
+		05BCC2BA2891293000B5BD70 /* ClothesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClothesManager.swift; sourceTree = "<group>"; };
+		05D0C56D2892D38D0060A072 /* PollenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollenManager.swift; sourceTree = "<group>"; };
+		05D0C56F2892D9BB0060A072 /* UVManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UVManager.swift; sourceTree = "<group>"; };
 		05D372A5287DAB0A00EF6EB8 /* klader-efter-vader-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "klader-efter-vader-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		05D372A8287DAB0A00EF6EB8 /* klader_efter_vader_iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = klader_efter_vader_iosApp.swift; sourceTree = "<group>"; };
 		05D372AA287DAB0A00EF6EB8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		05D372AC287DAB0C00EF6EB8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		05D372AF287DAB0C00EF6EB8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		05DC975C288AAD20008DF5E5 /* CitiesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,9 +63,13 @@
 		05D372A7287DAB0A00EF6EB8 /* klader-efter-vader-ios */ = {
 			isa = PBXGroup;
 			children = (
+				0595A29E28994330004531C5 /* CitiesManager.swift */,
+				05D0C56D2892D38D0060A072 /* PollenManager.swift */,
+				0595A29C28993C83004531C5 /* LocationManager.swift */,
+				05D0C56F2892D9BB0060A072 /* UVManager.swift */,
 				0592DAE1288EB4F300BAE387 /* WeatherManager.swift */,
+				05BCC2BA2891293000B5BD70 /* ClothesManager.swift */,
 				05D372A8287DAB0A00EF6EB8 /* klader_efter_vader_iosApp.swift */,
-				05DC975C288AAD20008DF5E5 /* CitiesManager.swift */,
 				05D372AA287DAB0A00EF6EB8 /* ContentView.swift */,
 				05D372AC287DAB0C00EF6EB8 /* Assets.xcassets */,
 				05D372AE287DAB0C00EF6EB8 /* Preview Content */,
@@ -144,9 +156,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				05D372AB287DAB0A00EF6EB8 /* ContentView.swift in Sources */,
-				05DC975D288AAD20008DF5E5 /* CitiesManager.swift in Sources */,
 				0592DAE2288EB4F300BAE387 /* WeatherManager.swift in Sources */,
+				0595A29F28994330004531C5 /* CitiesManager.swift in Sources */,
+				05D0C5702892D9BB0060A072 /* UVManager.swift in Sources */,
+				0595A29D28993C83004531C5 /* LocationManager.swift in Sources */,
+				05BCC2BB2891293000B5BD70 /* ClothesManager.swift in Sources */,
 				05D372A9287DAB0A00EF6EB8 /* klader_efter_vader_iosApp.swift in Sources */,
+				05D0C56E2892D38D0060A072 /* PollenManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,6 +293,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"klader-efter-vader-ios/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Using your location";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -305,6 +323,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"klader-efter-vader-ios/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Using your location";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

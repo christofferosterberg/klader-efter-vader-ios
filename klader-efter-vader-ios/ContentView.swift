@@ -6,22 +6,17 @@
 //
 
 import SwiftUI
+import MapKit
 
 var host = "http://localhost:3000/"
 
-struct City: Codable {
-    var id: Int
-    var latitude, longitude: Double
-    var name: String
-}
-
-struct Cities: Codable {
-    var cities: [City]
-}
-
 struct ContentView: View {
     
+    @ObservedObject private var locationManager = LocationManager()
+    
+    
     @State private var city: String = ""
+    @State private var cities: [City] = []
     @State private var clothes: String = ""
     @State private var clothesButtonIsShown: Bool = true
     @State private var clothesStackIsShown: Bool = false
@@ -36,6 +31,7 @@ struct ContentView: View {
     @State private var uvQuestionsAreShown: Bool = false
     @State private var uvStackIsShown: Bool = false
     
+    @MainActor var cityManager = CityManager()
     @MainActor var weatherManager = WeatherManager()
     @MainActor var clothesManager = ClothesManager()
     @MainActor var pollenManager = PollenManager()
@@ -62,11 +58,13 @@ struct ContentView: View {
     @State private var tarnabyIcon: String = ""
     @State private var kirunaIcon: String = ""
     
-    
     //
     
     
     var body: some View {
+        let coordinate = self.locationManager.location != nil
+        ? self.locationManager.location!.coordinate : CLLocationCoordinate2D()
+        
         ScrollView{
             VStack(alignment: .center, spacing: 10.0) {
                 VStack(alignment: .center){
@@ -76,6 +74,13 @@ struct ContentView: View {
                 .frame(width: 390.0)
                 .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
                 
+                ZStack {
+                    Text("\(coordinate.latitude), \(coordinate.longitude)")
+                    
+                }
+                .task{
+                    print(coordinate)
+                }
                 VStack(alignment: .center){
                     Text("Välkommen till Kläder Efter Väder!")
                         .font(.title2)
@@ -97,6 +102,13 @@ struct ContentView: View {
                         .border(.gray)
                 }
                 .padding(.horizontal)
+                .task {
+                    cities = await cityManager.fetchCities()
+                    if coordinate.latitude != 0.0 && coordinate.longitude != 0.0 {
+                        city = cityManager.findClosestCity(latitude: coordinate.latitude, longitude: coordinate.longitude, cities: cities)
+                        
+                    }
+                }
                 
                 VStack(alignment: .center){
                     if clothesButtonIsShown {
