@@ -10,10 +10,111 @@ import MapKit
 
 var host = "https://klader-efter-vader.herokuapp.com/"
 
+struct WeatherIcon: View {
+    let icon: String
+    let x, y: Double
+    
+    var body: some View {
+        Image(icon)
+            .resizable(resizingMode: .stretch)
+            .frame(width: 40.0, height: 30.0)
+            .offset(x: x, y: y)
+    }
+}
+
+struct InfoButton: View {
+    let label: String
+    let isShown: Bool
+    let action: () -> Void
+    
+    
+    var body: some View {
+        if isShown {
+            Button(label, action: {action()})
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color(red: 0.788, green: 0.949, blue: 1.0))
+            .foregroundColor(.black)
+            .cornerRadius(40)
+        }
+    }
+}
+
+struct OptionButton: View {
+    let label: String
+    let action: () -> Void
+    
+    var body: some View {
+        Button(label,
+               action: {action()})
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+        .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
+        .cornerRadius(10)
+    }
+}
+
+struct InfoStack: View {
+    let text: String
+    let isShown: Bool
+    let update: () -> Void
+    let cancel: () -> Void
+    
+    
+    var body: some View {
+        if isShown {
+            HStack(alignment: .center) {
+                Text(text)
+                    .multilineTextAlignment(.leading)
+                    .padding(/*@START_MENU_TOKEN@*/.all, 10.0/*@END_MENU_TOKEN@*/)
+                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity)
+                    .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                    .cornerRadius(10)
+                VStack(alignment: .center) {
+                    Button("Uppdatera", action: {update()})
+                        .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
+                        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
+                        .cornerRadius(5)
+                    Button("Återgå", action: {cancel()})
+                        .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
+                        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.gray/*@END_MENU_TOKEN@*/)
+                        .cornerRadius(5)
+                        .foregroundColor(.white)
+                    Spacer()
+                }
+            }
+            .padding(.bottom, 2.0)
+        }
+    }
+}
+
+struct CityTitle: View {
+    let text: String
+    
+    var body: some View {
+        Text(text)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .font(.title3)
+            .multilineTextAlignment(.leading)
+    }
+}
+
+struct CityWeather: View {
+    let text: String
+    
+    var body: some View {
+        Text(text)
+            .padding(.bottom)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .multilineTextAlignment(.leading)
+    }
+}
+
 struct ContentView: View {
     
     @ObservedObject private var locationManager = LocationManager()
-    
     
     @State private var city: String = ""
     @State private var cities: [City] = []
@@ -57,8 +158,6 @@ struct ContentView: View {
     @State private var luleaIcon: String = ""
     @State private var tarnabyIcon: String = ""
     @State private var kirunaIcon: String = ""
-    
-    //
     
     
     var body: some View {
@@ -104,245 +203,133 @@ struct ContentView: View {
                 }
                 
                 VStack(alignment: .center){
-                    if clothesButtonIsShown {
-                        Button("Se vilka kläder du ska ta på dig idag!",
-                               action: {
-                            Task{
-                                clothesButtonIsShown = false
-                                clothesStackIsShown = true
-                                clothes = await clothesManager.fetchClothes(city: city)
-                            }})
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(red: 0.788, green: 0.949, blue: 1.0))
-                        .foregroundColor(.black)
-                        .cornerRadius(40)
-                    }
                     
-                    if clothesStackIsShown {
-                        HStack(alignment: .center) {
-                            Text(clothes)
-                                .multilineTextAlignment(.leading)
-                                .padding(/*@START_MENU_TOKEN@*/.all, 10.0/*@END_MENU_TOKEN@*/)
-                                .frame(maxWidth: .infinity)
-                                .frame(maxWidth: .infinity)
-                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                                .cornerRadius(10)
-                            VStack(alignment: .center) {
-                                Button("Uppdatera", action: {
-                                    Task {
-                                        clothes = await clothesManager.fetchClothes(city: city)
-                                    }})
-                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
-                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                                .cornerRadius(5)
-                                Button("Återgå", action: {
-                                    Task{
-                                        clothesButtonIsShown = true
-                                        clothesStackIsShown = false
-                                    }})
-                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
-                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.gray/*@END_MENU_TOKEN@*/)
-                                .cornerRadius(5)
-                                .foregroundColor(.white)
-                                Spacer()
-                            }
+                    // CLOTHES //
+                    InfoButton(label: "Se vilka kläder du ska ta på dig idag!", isShown: clothesButtonIsShown,
+                               action: {
+                        Task {
+                            clothesButtonIsShown = false
+                            clothesStackIsShown = true
+                            clothes = await clothesManager.fetchClothes(city: city)
                         }
-                        .padding(.bottom, 2.0)
-                    }
+                    })
                     
-                    if pollenButtonIsShown {
-                        Button("Ta reda på om du behöver ta pollenmedicin idag!",
+                    InfoStack(text: clothes, isShown: clothesStackIsShown,
+                              update: {
+                        Task {
+                            clothes = await clothesManager.fetchClothes(city: city)
+                        }
+                    },cancel: {
+                        Task {
+                            clothesButtonIsShown = true
+                            clothesStackIsShown = false
+                        }
+                    })
+                    
+                    // POLLEN //
+                    InfoButton(label: "Ta reda på om du behöver ta pollenmedicin idag!", isShown: pollenButtonIsShown,
                                action: {
-                            Task {
-                                pollenButtonIsShown = false
-                                pollenQuestionsAreShown = true
-                            }})
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
-                        .cornerRadius(40)
-                    }
+                        Task {
+                            pollenButtonIsShown = false
+                            pollenQuestionsAreShown = true
+                        }
+                    })
                     
                     if pollenQuestionsAreShown {
                         Text("Hur allergisk skulle du säga att du är emot pollen?")
                             .font(.title3)
                             .multilineTextAlignment(.leading)
                         HStack{
-                            Button("Lite allergisk",
-                                   action: {
-                                Task{
+                            OptionButton(label: "Lite allergisk", action: {
+                                Task {
                                     pollenQuestionsAreShown = false
                                     pollenStackIsShown = true
                                     allergyValue = 0
                                     pollen = await pollenManager.fetchPollen(city: city, allergy: allergyValue)
-                                    
-                                }})
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
-                            .cornerRadius(10)
-                            
-                            Button("Ganska allergisk",
-                                   action: {
-                                Task{
+                                }
+                            })
+                            OptionButton(label: "Ganska allergisk", action: {
+                                Task {
                                     pollenQuestionsAreShown = false
                                     pollenStackIsShown = true
                                     allergyValue = 1
                                     pollen = await pollenManager.fetchPollen(city: city, allergy: allergyValue)
-                                    
-                                }})
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
-                            .cornerRadius(10)
-                            Button("Väldigt allergisk",
-                                   action: {
-                                Task{
+                                }
+                            })
+                            OptionButton(label: "Väldigt allergisk", action: {
+                                Task {
                                     pollenQuestionsAreShown = false
                                     pollenStackIsShown = true
                                     allergyValue = 2
                                     pollen = await pollenManager.fetchPollen(city: city, allergy: allergyValue)
-                                }})
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
-                            .cornerRadius(10)
+                                }
+                            })
                         }
                     }
                     
-                    if pollenStackIsShown {
-                        HStack(alignment: .center) {
-                            Text(pollen)
-                                .multilineTextAlignment(.leading)
-                                .padding(/*@START_MENU_TOKEN@*/.all, 10.0/*@END_MENU_TOKEN@*/)
-                                .frame(maxWidth: .infinity)
-                                .frame(maxWidth: .infinity)
-                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                                .cornerRadius(10)
-                            VStack(alignment: .center) {
-                                Button("Uppdatera", action: {
-                                    Task {
-                                        pollen = await pollenManager.fetchPollen(city: city, allergy: allergyValue)
-                                    }})
-                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
-                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                                .cornerRadius(5)
-                                Button("Återgå", action: {
-                                    Task{
-                                        pollenButtonIsShown = true
-                                        pollenStackIsShown = false
-                                    }})
-                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
-                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.gray/*@END_MENU_TOKEN@*/)
-                                .cornerRadius(5)
-                                .foregroundColor(.white)
-                                Spacer()
-                            }
+                    InfoStack(text: pollen, isShown: pollenStackIsShown,
+                              update: {
+                        Task {
+                            pollen = await pollenManager.fetchPollen(city: city, allergy: allergyValue)
                         }
-                        .padding(.bottom, 2.0)
-                        
-                    }
+                    }, cancel: {
+                        Task {
+                            pollenButtonIsShown = true
+                            pollenStackIsShown = false
+                        }
+                    })
                     
-                    if uvButtonIsShown {
-                        Button("Ta reda på hur stark solkyddsfaktor du behöver ta idag!",
-                               action: {
-                            Task {
-                                uvButtonIsShown = false
-                                uvQuestionsAreShown = true
-                            }})
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
-                        .cornerRadius(40)
-                    }
+                    // UV //
+                    InfoButton(label: "Ta reda på hur stark solkyddsfaktor du behöver ta idag!", isShown: uvButtonIsShown, action: {
+                        Task {
+                            uvButtonIsShown = false
+                            uvQuestionsAreShown = true
+                        }
+                    })
                     
                     if uvQuestionsAreShown {
                         Text("Hur känslig skulle du säga att du är mot solen?")
                             .font(.title3)
                             .multilineTextAlignment(.leading)
                         HStack{
-                            Button("Lite känslig",
-                                   action: {
-                                Task{
+                            OptionButton(label: "Lite känslig", action: {
+                                Task {
                                     uvQuestionsAreShown = false
                                     uvStackIsShown = true
                                     uvValue = 0
                                     uv = await uvManager.fetchUV(city: city, uvValue: uvValue)
-                                    
-                                }})
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
-                            .cornerRadius(10)
-                            
-                            Button("Ganska känslig",
-                                   action: {
-                                Task{
+                                }
+                            })
+                            OptionButton(label: "Ganska känslig", action: {
+                                Task {
                                     uvQuestionsAreShown = false
                                     uvStackIsShown = true
                                     uvValue = 1
                                     uv = await uvManager.fetchUV(city: city, uvValue: uvValue)
-                                    
-                                }})
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
-                            .cornerRadius(10)
-                            Button("Väldigt känslig",
-                                   action: {
-                                Task{
+                                }
+                            })
+                            OptionButton(label: "Väldigt känslig", action: {
+                                Task {
                                     uvQuestionsAreShown = false
                                     uvStackIsShown = true
                                     uvValue = 2
                                     uv = await uvManager.fetchUV(city: city, uvValue: uvValue)
-                                }})
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
-                            .cornerRadius(10)
+                                }
+                            })
                         }
                     }
                     
-                    if uvStackIsShown {
-                        HStack(alignment: .center) {
-                            Text(uv)
-                                .multilineTextAlignment(.leading)
-                                .padding(/*@START_MENU_TOKEN@*/.all, 10.0/*@END_MENU_TOKEN@*/)
-                                .frame(maxWidth: .infinity)
-                                .frame(maxWidth: .infinity)
-                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                                .cornerRadius(10)
-                            VStack(alignment: .center) {
-                                Button("Uppdatera", action: {
-                                    Task {
-                                        uv = await uvManager.fetchUV(city: city, uvValue: uvValue)
-                                    }})
-                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
-                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
-                                .cornerRadius(5)
-                                Button("Återgå", action: {
-                                    Task{
-                                        uvButtonIsShown = true
-                                        uvStackIsShown = false
-                                    }})
-                                .padding(/*@START_MENU_TOKEN@*/.all, 5.0/*@END_MENU_TOKEN@*/)
-                                .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.gray/*@END_MENU_TOKEN@*/)
-                                .cornerRadius(5)
-                                .foregroundColor(.white)
-                                Spacer()
-                            }
+                    InfoStack(text: uv, isShown: uvStackIsShown,
+                              update: {
+                        Task {
+                            uv = await uvManager.fetchUV(city: city, uvValue: uvValue)
                         }
-                        .padding(.bottom, 2.0)
-                    }
+                    }, cancel: {
+                        Task {
+                            uvButtonIsShown = true
+                            uvStackIsShown = false
+                        }
+                    })
                 }
                 .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                 
@@ -353,30 +340,12 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .font(.title2)
                         .multilineTextAlignment(.leading)
-                    Text("Stockholm")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.title3)
-                        .multilineTextAlignment(.leading)
-                    Text(stockholmWeather)
-                        .padding(.bottom)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .multilineTextAlignment(.leading)
-                    Text("Göteborg ")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.title3)
-                        .multilineTextAlignment(.leading)
-                    Text(gothenburgWeather)
-                        .padding(.bottom)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .multilineTextAlignment(.leading)
-                    Text("Malmö ")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.title3)
-                        .multilineTextAlignment(.leading)
-                    Text(malmoWeather)
-                        .padding(.bottom)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .multilineTextAlignment(.leading)
+                    CityTitle(text: "Stockholm")
+                    CityWeather(text: stockholmWeather)
+                    CityTitle(text: "Göteborg")
+                    CityWeather(text: gothenburgWeather)
+                    CityTitle(text: "Malmö")
+                    CityWeather(text: malmoWeather)
                 }
                 .padding(.horizontal)
                 
@@ -384,68 +353,23 @@ struct ContentView: View {
                     .overlay(
                         ZStack {
                             ZStack {
-                                Image(stockholmIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: 55.0, y: 115.0)
-                                Image(gothenburgIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: -90.0, y: 170.0)
-                                Image(malmoIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: -60.0, y: 267.0)
-                                Image(kalmarIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: 0.0, y: 225.0)
-                                Image(visbyIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: 52.0, y: 195.0)
-                                Image(jonkopingIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: -32.0, y: 170.0)
-                                Image(karlstadIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: -50.0, y: 105.0)
-                                Image(gavleIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: 30.0, y: 60.0)
-                                Image(moraIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: -20.0, y: 45.0)
-                                Image(sundsvallIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: 30.0, y: -10.0)
+                                WeatherIcon(icon: stockholmIcon, x: 55.0, y: 115.0)
+                                WeatherIcon(icon: gothenburgIcon, x: -90.0, y: 170.0)
+                                WeatherIcon(icon: malmoIcon, x: -60.0, y: 267.0)
+                                WeatherIcon(icon: kalmarIcon, x: 0.0, y: 225.0)
+                                WeatherIcon(icon: visbyIcon, x: 52.0, y: 195.0)
+                                WeatherIcon(icon: jonkopingIcon, x: -32.0, y: 170.0)
+                                WeatherIcon(icon: karlstadIcon, x: -50.0, y: 105.0)
+                                WeatherIcon(icon: gavleIcon, x: 30.0, y: 60.0)
+                                WeatherIcon(icon: moraIcon, x: -20.0, y: 45.0)
+                                WeatherIcon(icon: sundsvallIcon, x: 30.0, y: -10.0)
                             }
                             ZStack {
-                                Image(ostersundIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: -25.0, y: -50.0)
-                                Image(umeaIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: 75.0, y: -80.0)
-                                Image(luleaIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: 100.0, y: -145.0)
-                                Image(tarnabyIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: -20.0, y: -150.0)
-                                Image(kirunaIcon)
-                                    .resizable(resizingMode: .stretch)
-                                    .frame(width: 40.0, height: 30.0)
-                                    .offset(x: 55.0, y: -245.0)
+                                WeatherIcon(icon: ostersundIcon, x: -25.0, y: -50.0)
+                                WeatherIcon(icon: umeaIcon, x: 75.0, y: -80.0)
+                                WeatherIcon(icon: luleaIcon, x: 100.0, y: -145.0)
+                                WeatherIcon(icon: tarnabyIcon, x: -20.0, y: -150.0)
+                                WeatherIcon(icon: kirunaIcon, x: 55.0, y: -245.0)
                             }
                         }
                     )
