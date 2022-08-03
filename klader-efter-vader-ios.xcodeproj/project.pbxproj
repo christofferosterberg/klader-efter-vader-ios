@@ -13,6 +13,7 @@
 		05BCC2BB2891293000B5BD70 /* ClothesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05BCC2BA2891293000B5BD70 /* ClothesManager.swift */; };
 		05D0C56E2892D38D0060A072 /* PollenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D0C56D2892D38D0060A072 /* PollenManager.swift */; };
 		05D0C5702892D9BB0060A072 /* UVManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D0C56F2892D9BB0060A072 /* UVManager.swift */; };
+		05D11A3D289ACB6E00316144 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D11A3C289ACB6E00316144 /* Components.swift */; };
 		05D372A9287DAB0A00EF6EB8 /* klader_efter_vader_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D372A8287DAB0A00EF6EB8 /* klader_efter_vader_iosApp.swift */; };
 		05D372AB287DAB0A00EF6EB8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D372AA287DAB0A00EF6EB8 /* ContentView.swift */; };
 		05D372AD287DAB0C00EF6EB8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 05D372AC287DAB0C00EF6EB8 /* Assets.xcassets */; };
@@ -26,6 +27,7 @@
 		05BCC2BA2891293000B5BD70 /* ClothesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClothesManager.swift; sourceTree = "<group>"; };
 		05D0C56D2892D38D0060A072 /* PollenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollenManager.swift; sourceTree = "<group>"; };
 		05D0C56F2892D9BB0060A072 /* UVManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UVManager.swift; sourceTree = "<group>"; };
+		05D11A3C289ACB6E00316144 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		05D372A5287DAB0A00EF6EB8 /* klader-efter-vader-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "klader-efter-vader-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		05D372A8287DAB0A00EF6EB8 /* klader_efter_vader_iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = klader_efter_vader_iosApp.swift; sourceTree = "<group>"; };
 		05D372AA287DAB0A00EF6EB8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 		05D372A7287DAB0A00EF6EB8 /* klader-efter-vader-ios */ = {
 			isa = PBXGroup;
 			children = (
+				05D11A3C289ACB6E00316144 /* Components.swift */,
 				0595A29E28994330004531C5 /* CitiesManager.swift */,
 				05D0C56D2892D38D0060A072 /* PollenManager.swift */,
 				0595A29C28993C83004531C5 /* LocationManager.swift */,
@@ -162,6 +165,7 @@
 				0595A29D28993C83004531C5 /* LocationManager.swift in Sources */,
 				05BCC2BB2891293000B5BD70 /* ClothesManager.swift in Sources */,
 				05D372A9287DAB0A00EF6EB8 /* klader_efter_vader_iosApp.swift in Sources */,
+				05D11A3D289ACB6E00316144 /* Components.swift in Sources */,
 				05D0C56E2892D38D0060A072 /* PollenManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
