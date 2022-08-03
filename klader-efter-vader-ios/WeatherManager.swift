@@ -42,7 +42,7 @@ struct Weather: Codable {
     ]
     
     var icons = [
-        "sun.min.fill",
+        "sun.max.fill",
         "cloud.sun.fill",
         "cloud.sun.fill",
         "cloud.sun.fill",

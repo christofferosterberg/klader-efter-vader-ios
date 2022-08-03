@@ -43,7 +43,6 @@ struct City: Codable {
         for city in cities {
             
             let distance = sqrt(pow(city.latitude - latitude,Double(2)) + pow(city.longitude - longitude,Double(2)))
-            print("Stad: " + city.name + " Avstånd: " + String(distance))
             
             if distance < closestDistance {
                 closestCity = city

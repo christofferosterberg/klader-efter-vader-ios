@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-var host = "http://localhost:3000/"
+var host = "https://klader-efter-vader.herokuapp.com/"
 
 struct ContentView: View {
     
@@ -74,13 +74,6 @@ struct ContentView: View {
                 .frame(width: 390.0)
                 .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(red: 0.788, green: 0.949, blue: 1.0)/*@END_MENU_TOKEN@*/)
                 
-                ZStack {
-                    Text("\(coordinate.latitude), \(coordinate.longitude)")
-                    
-                }
-                .task{
-                    print(coordinate)
-                }
                 VStack(alignment: .center){
                     Text("Välkommen till Kläder Efter Väder!")
                         .font(.title2)
@@ -365,6 +358,7 @@ struct ContentView: View {
                         .font(.title3)
                         .multilineTextAlignment(.leading)
                     Text(stockholmWeather)
+                        .padding(.bottom)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .multilineTextAlignment(.leading)
                     Text("Göteborg ")
@@ -372,6 +366,7 @@ struct ContentView: View {
                         .font(.title3)
                         .multilineTextAlignment(.leading)
                     Text(gothenburgWeather)
+                        .padding(.bottom)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .multilineTextAlignment(.leading)
                     Text("Malmö ")
@@ -379,6 +374,7 @@ struct ContentView: View {
                         .font(.title3)
                         .multilineTextAlignment(.leading)
                     Text(malmoWeather)
+                        .padding(.bottom)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .multilineTextAlignment(.leading)
                 }
